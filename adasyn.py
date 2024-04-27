@@ -9,6 +9,8 @@ from sklearn.neighbors import NearestNeighbors
 from sklearn.utils import check_array, check_random_state
 from collections import Counter
 
+
+
 __author__ = 'stavrianos'
 
 # Link to paper:  bit.ly/22KgAnP
@@ -160,6 +162,10 @@ class ADASYN(object):
 
         return(np.asarray(new_data), np.asarray(new_labels))
 
+    from collections import Counter
+
+
+
     def oversample(self):
         """
         Preliminary calculations before generation of
@@ -172,7 +178,7 @@ class ADASYN(object):
             # Checking if variable exists, i.e. if fit() was called
             self.unique_classes_ = self.unique_classes_
         except:
-            raise RuntimeError("You need to fit() before applying tranform(),"
+            raise RuntimeError("You need to fit() before applying transform(),"
                                "or simply fit_transform()")
         int_X = np.zeros([1, self.X.shape[1]])
         int_y = np.zeros([1])
@@ -191,8 +197,8 @@ class ADASYN(object):
                 self.G = (self.clstats[self.maj_class_] - self.clstats[cl]) \
                             * self.ratio
 
-                # ADASYN is built upon eucliden distance so p=2 default
-                self.nearest_neighbors_ = NearestNeighbors(n_neighbors=self.k + 1)
+                # ADASYN is built upon Manhattan distance
+                self.nearest_neighbors_ = NearestNeighbors(n_neighbors=self.k + 1, metric='manhattan')
                 self.nearest_neighbors_.fit(self.X)
 
                 # keeping indexes of minority examples
@@ -234,6 +240,7 @@ class ADASYN(object):
                 if len(inter_y):
                     int_y = np.concatenate((int_y, inter_y), axis=0)
         # New samples are concatenated in the beggining of the X,y arrays
-        # index_new contains the indiced of artificial examples
-        self.index_new = [i for i in range(0,self.num_new)]
-        return(int_X[1:-1], int_y[1:-1])
+        # index_new contains the indices of artificial examples
+        self.index_new = [i for i in range(0, self.num_new)]
+        return int_X[1:-1], int_y[1:-1]
+
